@@ -1,6 +1,6 @@
 <script lang="ts">
     import config, { saveConfig } from "./config.svelte";
-    import { bareProxyUrls, wispProxyUrls, themes } from "./ethereal";
+    import { bareProxyUrls, wispProxyUrls, themes } from "./verdis";
     import proxyManager, { ServiceWorkerConfig } from "./proxy.svelte";
 
     let { isConfigOpen = $bindable() }: { isConfigOpen: boolean } = $props();
@@ -23,7 +23,7 @@
     });
 
     if (document.title) {
-        document.title = localStorage.getItem("tabTitle") || "ethereal";
+        document.title = localStorage.getItem("tabTitle") || "verdis.";
     }
 
     const faviconElement =

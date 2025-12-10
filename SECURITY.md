@@ -19,7 +19,7 @@ refresh the page to load the latest version, or empty the cache and reload
 #### on a local copy
 
 ```bash
-git pull https://github.com/tenclips/ethereal
+git pull https://github.com/tenclips/verdis
 
 pnpm i # use your package manager of choice
 pnpm run build # build new files

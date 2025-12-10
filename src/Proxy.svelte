@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { splashText } from "./ethereal";
+    import { splashText } from "./verdis";
     import proxyManager from "./proxy.svelte";
 
     let iframe: HTMLIFrameElement = $state();

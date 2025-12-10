@@ -7,6 +7,7 @@
     import { onEnterKeyPressed } from "./util";
     import autoProxyProber from "./prober.svelte";
     import { History } from "./history";
+    import Games from "./Games.svelte";
     import {
         Search,
         Settings2,
@@ -14,7 +15,8 @@
         RotateCw,
         ArrowRight,
         ArrowLeft,
-        X
+        X,
+        Gamepad2
     } from "@lucide/svelte";
 
     $effect(() => {
@@ -32,6 +34,7 @@
     });
 
     let destinationInput = $state("");
+    let view = $state("home");
 
     let isConfigOpen = $state(false);
 
@@ -167,68 +170,77 @@
     >
     </div>
 {:else}
-    <Config bind:isConfigOpen></Config>
+    {#if view === 'home'}
+        <Config bind:isConfigOpen></Config>
 
-    <div
-        class="flex grow-1 bottom-0 fixed w-full bg-transparent h-[9%] items-center justify-center"
-    >
-    <button
-            class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-0 mr-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
-            title="Previous Page"
-            onclick={() => setUrl(proxyHistory.goBackward())}
-            ><ArrowLeft class="scale-95 transition-all" /></button
-        > 
-    <button
-            class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-0 mr-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
-            title="Next Page"
-            onclick={() => setUrl(proxyHistory.goForward())}
-            ><ArrowRight class="scale-95 transition-all" /></button
-        >    
-    <button
-            class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-0 mr-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
-            title="Refresh Page"
-            onclick={() => iframe.contentWindow.location.reload()}
-            ><RotateCw class="scale-95 transition-all" /></button
-        >
-        <input
-            type="text"
-            class="input max-w-2/3 h-8 min-w-2/3 rounded-full p-5 focus:outline-none focus:shadow-none focus:border-none focus:brightness-125 transition-all outline-none shadow-none border-none"
-            title="Destination URL"
-            placeholder="search anything..."
-            onkeydown={onEnterKeyPressed(startProxy)}
-            {@attach (urlBar: HTMLInputElement) => {
-                urlBar.focus();
-            }}
-            bind:value={destinationInput}
-        />
-        <span
-            class="loading loading-spinner scale-75 loading-xl ml-[-3.5%] mb-[0%] mr-1.5 z-1000 transition-all" style="display: none;" bind:this={loader}>
-        </span>
-        <button
-            class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
-            title="Start proxy"
-            onclick={startProxy}
-            disabled={proxyManager.proxyUrl === "" ||
-                !proxyManager.serviceWorker}><Search class="scale-95" /></button
+        <div
+            class="flex grow-1 bottom-0 fixed w-full bg-transparent h-[9%] items-center justify-center"
         >
         <button
-            class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
-            title="Open Settings"
-            onclick={() => (isConfigOpen = true)}
-            ><Settings2 class="scale-95" /></button
-        >
+                class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-0 mr-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
+                title="Previous Page"
+                onclick={() => setUrl(proxyHistory.goBackward())}
+                ><ArrowLeft class="scale-95 transition-all" /></button
+            > 
         <button
-            class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
-            title="Get Help"
-            onclick={window.open.bind(
-                window,
-                "https://github.com/tenclips/ethereal/issues/new?template=bug-report.md",
-            )}><MessageCircleQuestionMark class="scale-95" /></button
-        >
-    </div>
-    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-4/5 items-center text-center">
-        <h1 class="text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-300">ethereal</h1>
-        <p>a sleek proxy with speed, design, and usability in mind.</p>
-    </div>
-
+                class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-0 mr-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
+                title="Next Page"
+                onclick={() => setUrl(proxyHistory.goForward())}
+                ><ArrowRight class="scale-95 transition-all" /></button
+            >    
+        <button
+                class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-0 mr-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
+                title="Refresh Page"
+                onclick={() => iframe.contentWindow.location.reload()}
+                ><RotateCw class="scale-95 transition-all" /></button
+            >
+            <input
+                type="text"
+                class="input max-w-2/3 h-8 min-w-2/3 rounded-full p-5 focus:outline-none focus:shadow-none focus:border-none focus:brightness-125 transition-all outline-none shadow-none border-none"
+                title="Destination URL"
+                placeholder="search anything..."
+                onkeydown={onEnterKeyPressed(startProxy)}
+                {@render (urlBar: HTMLInputElement) => {
+                    urlBar.focus();
+                }}
+                bind:value={destinationInput}
+            />
+            <span
+                class="loading loading-spinner scale-75 loading-xl ml-[-3.5%] mb-[0%] mr-1.5 z-1000 transition-all" style="display: none;" bind:this={loader}>
+            </span>
+            <button
+                class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
+                title="Start proxy"
+                onclick={startProxy}
+                disabled={proxyManager.proxyUrl === "" ||
+                    !proxyManager.serviceWorker}><Search class="scale-95" /></button
+            >
+            <button
+                class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
+                title="Games"
+                onclick={() => view = 'games'}
+                ><Gamepad2 class="scale-95" /></button
+            >
+            <button
+                class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
+                title="Open Settings"
+                onclick={() => (isConfigOpen = true)}
+                ><Settings2 class="scale-95" /></button
+            >
+            <button
+                class="btn-circle bg-blue-500 p-2 text-sm m-0 ml-2 cursor-pointer pointer-events-auto hover:brightness-75 transition-all"
+                title="Get Help"
+                onclick={window.open.bind(
+                    window,
+                    "https://github.com/tenclips/ethereal/issues/new?template=bug-report.md",
+                )}><MessageCircleQuestionMark class="scale-95" /></button
+            >
+        </div>
+        <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-4/5 items-center text-center">
+            <h1 class="text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-300">verdis.</h1>
+            <p>a sleek proxy with speed, design, and usability in mind.</p>
+        </div>
+    {:else if view === 'games'}
+        <Games bind:view />
+    {/if}
 {/if}

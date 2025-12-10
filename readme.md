@@ -1,7 +1,7 @@
 <p align="center">
   <img src=".github/branding/logo.png" height="150px"></img>
 </p>
-<h1 align="center" id="readme-top">ethereal.</h1>
+<h1 align="center" id="readme-top">verdis.</h1>
 <p align="center">
   <sup align="center"><i>/iˈTHirēəl/</i></sup><br>
 <sub align="center"><i>/uh-thee-ree-uhl/</i></sub>
@@ -81,7 +81,7 @@ a lot of things can be customised on this website, including the following
 3. add scramjet support
 4. add auto cloaking
 5. add support via netlify (on-site form)
-6. get a domain (e.g. ethereal.net)
+6. get a domain (e.g. verdis.net)
 
 more will be added soon.
 
@@ -138,10 +138,10 @@ you can deploy to any static host basically, including the following
 
 you could also use the dedicated buttons below for deployments
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=github.com%2Ftenclips%2Fethereal&project-name=ethereal-proxy&repository-name=ethereal-proxy&demo-title=preview%20the%20website%20here&demo-description=a%20demo%20of%20this%20proxy&demo-url=https%3A%2F%2Fetherealproxy.netlify.app%2F&demo-image=https%3A%2F%2Fraw.githubusercontent.com%2Ftenclips%2Fethereal%2Frefs%2Fheads%2Fmaster%2F.github%2Fbranding%2Flogo.png%3Ftoken%3DGHSAT0AAAAAADJMSCMGTUNVM2X2UIB5P3JS2F3FAIQ)
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/tenclips/ethereal)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=github.com%2Ftenclips%2Fverdis&project-name=verdis-proxy&repository-name=verdis-proxy&demo-title=preview%20the%20website%20here&demo-description=a%20demo%20of%20this%20proxy&demo-url=https%3A%2F%2Fetherealproxy.netlify.app%2F&demo-image=https%3A%2F%2Fraw.githubusercontent.com%2Ftenclips%2Fverdis%2Frefs%2Fheads%2Fmaster%2F.github%2Fbranding%2Flogo.png%3Ftoken%3DGHSAT0AAAAAADJMSCMGTUNVM2X2UIB5P3JS2F3FAIQ)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/tenclips/verdis)
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/tenclips/ethereal)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/tenclips/verdis)
 
 if you don't know how to deploy to firebase or github pages, follow the guides below.
 
@@ -149,7 +149,7 @@ if you don't know how to deploy to firebase or github pages, follow the guides b
 
 first, clone the repo by running
 ```bash
-git clone https://github.com/tenclips/ethereal
+git clone https://github.com/tenclips/verdis
 ```
 
 then install fb tools
@@ -171,7 +171,7 @@ firebase deploy
 #### github pages
 first, either fork or clone this repo
 ```bash
-git clone https://github.com/tenclips/ethereal
+git clone https://github.com/tenclips/verdis
 ```
 
 if you cloned, initialize a repo on github by uploading it or using the initialize button in vscode source control.
@@ -193,8 +193,8 @@ wait and you're done.
 
 first, clone the repository by running this command
 ```bash
-git clone https://github.com/tenclips/ethereal
-cd ethereal
+git clone https://github.com/tenclips/verdis
+cd verdis
 ```
 
 then install the dependencies using your package manager of choice
