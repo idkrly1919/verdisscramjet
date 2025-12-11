@@ -15,9 +15,16 @@
         X,
         Gamepad2,
         Home,
+        Music,
+        MessageCircle,
+        Github,
+        Twitch,
+        Video,
+        Cpu,
+        Tv
     } from "@lucide/svelte";
     import { onMount } from "svelte";
-    import { fade, fly, scale } from "svelte/transition";
+    import { fade, fly } from "svelte/transition";
 
     $effect(() => {
         if (config.useBare && config.bareSelectedProxy === "auto") {
@@ -111,7 +118,7 @@
     }
 
     // Typing effect for "Welcome to..."
-    let welcomeText = "nexus"; 
+    let welcomeText = "verdis."; 
     let typedText = $state("");
     let typingIndex = 0;
 
@@ -216,7 +223,7 @@
                         <!-- Custom Placeholder -->
                         {#if destinationInput === ""}
                             <span class="absolute left-14 text-zinc-500 text-lg pointer-events-none transition-opacity duration-200">
-                                Search <span class="font-bold text-zinc-400">verdis</span>.
+                                Search <span class="font-bold text-zinc-400">verdis.</span> or enter URL
                             </span>
                         {/if}
 
