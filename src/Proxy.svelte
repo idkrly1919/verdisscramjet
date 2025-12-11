@@ -4,6 +4,7 @@
 
     let iframe: HTMLIFrameElement = $state();
     let iframeHasLoaded = $state(false);
+    let intervalId: ReturnType<typeof setInterval>;
 
     const iframeAllow =
         "accelerometer ambient-light-sensor attribution-reporting autoplay bluetooth browsing-topics camera compute-pressure " +
@@ -16,19 +17,33 @@
         "allow-popups allow-popups-to-escape-sandbox allow-downloads allow-forms allow-modals allow-orientation-lock " +
         "allow-pointer-lock allow-presentation allow-same-origin allow-scripts allow-storage-access-by-user-activation";
 
+    function injectSuppressor() {
+        try {
+            if (!iframe || !iframe.contentWindow) return;
+            const win = iframe.contentWindow;
+            
+            // Override alert if it hasn't been overridden or if it got reset
+            // We verify by checking if it's our function
+            // Note: simple assignment works best
+            win.alert = (msg) => { console.log("Suppressed Alert:", msg); };
+            win.confirm = (msg) => { console.log("Suppressed Confirm:", msg); return true; };
+        } catch (e) {
+            // Ignore cross-origin blocking errors
+        }
+    }
+
+    $effect(() => {
+        if (iframe) {
+            // Aggressively inject suppressor every 100ms to catch early reloads/navigation
+            intervalId = setInterval(injectSuppressor, 100);
+            return () => clearInterval(intervalId);
+        }
+    });
+
     function onIframeLoad() {
         if (!iframe) return;
-
-        // Try to suppress alerts (only works for same-origin)
-        try {
-            const win = iframe.contentWindow;
-            if (win) {
-                win.alert = (msg) => console.log("Suppressed alert:", msg);
-                win.confirm = (msg) => { console.log("Suppressed confirm:", msg); return true; };
-            }
-        } catch (e) {
-            // Ignore cross-origin blocking
-        }
+        
+        injectSuppressor(); // Try immediately on load event
 
         try {
             const src = iframe.contentWindow.location.pathname;
