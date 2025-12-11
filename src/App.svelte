@@ -113,7 +113,7 @@
 
     // Typing effect for "Welcome to..."
     let welcomeText = "verdis."; 
-    let typedText = $state("");
+    let typedText = $state("v"); // Start with 'v' immediately
 
     $effect(() => {
         if (view === 'welcome' && typedText.length < welcomeText.length) {
@@ -153,8 +153,10 @@
 
 <!-- Only show star background when NOT in classroom view -->
 {#if view !== 'classroom'}
-    <div class="fixed inset-0 z-0 pointer-events-none bg-black">
-        <div class="stars absolute inset-0 {isWarping ? 'warp' : ''}"></div>
+    <div class="fixed inset-0 z-0 pointer-events-none bg-black overflow-hidden">
+        <div class="star-container {isWarping ? 'warp' : ''}">
+            <div class="stars"></div>
+        </div>
         <!-- Blue Glow at Bottom -->
         <div class="absolute bottom-0 left-0 right-0 h-[60vh] bg-gradient-to-t from-blue-900/60 via-blue-900/20 to-transparent opacity-80 blur-3xl"></div>
     </div>
@@ -297,8 +299,21 @@
         transform: scale(1.05);
     }
 
-    /* Star Animation with 35% more stars */
+    /* Optimized Star Animation - Uses Transform instead of background-position */
+    .star-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        perspective: 1000px;
+        transform-style: preserve-3d;
+    }
+
     .stars {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 300%; /* Triple height for smooth looping */
         background-image: 
             /* Original stars */
             radial-gradient(1px 1px at 10% 10%, #fff, rgba(0,0,0,0)),
@@ -316,21 +331,25 @@
             radial-gradient(1px 1px at 35% 75%, #fff, rgba(0,0,0,0)),
             radial-gradient(2px 2px at 45% 45%, #fff, rgba(0,0,0,0));
         background-size: 550px 550px;
-        animation: star-move 60s linear infinite;
+        background-repeat: repeat;
+        animation: star-scroll 60s linear infinite;
         opacity: 0.7;
-        transition: animation-duration 2s ease-in-out, transform 2s ease-in-out, opacity 2s ease-in-out;
     }
 
-    .stars.warp {
-        animation-duration: 0.2s; /* Really fast */
-        transform: scale(1.5); /* Slight zoom for trails effect feeling */
+    .star-container.warp .stars {
+        animation: star-scroll 0.2s linear infinite; /* Very fast */
         opacity: 1;
-        /* Simulate trails with a blur in motion */
-        filter: blur(1px);
+        /* Simple scale/opacity for warp effect, avoid expensive blur filter if possible */
+        transform-origin: center;
+    }
+    
+    .star-container.warp {
+        filter: blur(1px); /* Only blur during warp */
+        transition: filter 0.5s ease-in;
     }
 
-    @keyframes star-move {
-        from { background-position: 0 0; }
-        to { background-position: 550px 550px; }
+    @keyframes star-scroll {
+        from { transform: translateY(0); }
+        to { transform: translateY(-33.33%); } /* Move up by 1/3 since height is 300% */
     }
 </style>
