@@ -113,7 +113,7 @@
 
     // Typing effect for "Welcome to..."
     let welcomeText = "verdis."; 
-    let typedText = $state("v"); // Start with 'v' immediately
+    let typedText = $state("v");
 
     $effect(() => {
         if (view === 'welcome' && typedText.length < welcomeText.length) {
@@ -264,19 +264,24 @@
 
     {:else}
         <!-- Welcome Screen -->
-        <div class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center p-4" transition:fade={{ duration: 300 }}>
-            <h1 class="text-6xl md:text-7xl font-bold mb-4 tracking-tight">
-                Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">{typedText}</span><span class="animate-pulse text-blue-400">|</span>
-            </h1>
-            <p class="text-zinc-400 text-xl mb-12 font-light">Start your unblocking journey today!</p>
-            
-            <button 
-                class="glass-button px-8 py-3 rounded-full font-bold text-lg transition-all duration-300 flex items-center gap-2 group"
-                onclick={triggerWarp}
-            >
-                Get Started
-                <span class="group-hover:translate-x-1 transition-transform">✨</span>
-            </button>
+        <div class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center p-4">
+            <!-- Fade out wrapper for warp effect -->
+            {#if !isWarping}
+                <div class="flex flex-col items-center justify-center" transition:fade={{ duration: 500 }}>
+                    <h1 class="text-6xl md:text-7xl font-bold mb-4 tracking-tight">
+                        Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">{typedText}</span><span class="animate-pulse text-blue-400">|</span>
+                    </h1>
+                    <p class="text-zinc-400 text-xl mb-12 font-light">Start your unblocking journey today!</p>
+                    
+                    <button 
+                        class="glass-button px-8 py-3 rounded-full font-bold text-lg transition-all duration-300 flex items-center gap-2 group"
+                        onclick={triggerWarp}
+                    >
+                        Get Started
+                        <span class="group-hover:translate-x-1 transition-transform">✨</span>
+                    </button>
+                </div>
+            {/if}
         </div>
     {/if}
 </div>
@@ -299,7 +304,7 @@
         transform: scale(1.05);
     }
 
-    /* Optimized Star Animation - Uses Transform instead of background-position */
+    /* Optimized Star Animation */
     .star-container {
         position: absolute;
         width: 100%;
@@ -334,20 +339,18 @@
         background-repeat: repeat;
         animation: star-scroll 60s linear infinite;
         opacity: 0.7;
+        /* Smooth transitions for warp effect */
+        transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
     }
 
     .star-container.warp .stars {
-        animation: star-scroll 0.2s linear infinite; /* Very fast */
-        opacity: 1;
-        /* Simple scale/opacity for warp effect, avoid expensive blur filter if possible */
-        transform-origin: center;
+        animation-duration: 0.2s; /* Extremely fast looping to simulate high speed */
+        /* Stretch stars vertically to create "trails" */
+        transform: scaleY(20); 
+        opacity: 0.5; /* Fade out slightly to look like motion blur trails */
+        filter: blur(1px);
     }
     
-    .star-container.warp {
-        filter: blur(1px); /* Only blur during warp */
-        transition: filter 0.5s ease-in;
-    }
-
     @keyframes star-scroll {
         from { transform: translateY(0); }
         to { transform: translateY(-33.33%); } /* Move up by 1/3 since height is 300% */

@@ -26,7 +26,7 @@
         </div>
         <div class="absolute bottom-3 left-4 text-white/90 text-xs hover:underline z-10">
             <!-- Prevent bubble from capturing click -->
-            <a href="https://github.com/tenclips" target="_blank" onclick={(e) => e.stopPropagation()} class="hover:text-white">
+            <a href="https://github.com/idkrly1919" target="_blank" onclick={(e) => e.stopPropagation()} class="hover:text-white">
                 {teacher}
             </a>
         </div>
