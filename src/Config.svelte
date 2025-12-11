@@ -131,11 +131,11 @@
                     <input
                         class="input w-1/1 text-center bg-zinc-800 rounded-xl"
                         value={config.useBare ? config.bareCustomProxy : config.wispCustomProxy}
-                        on:input={(e) => {
+                        oninput={(e) => {
                             if (config.useBare) {
-                                config.bareCustomProxy = e.currentTarget.value;
+                                config.bareCustomProxy = (e.currentTarget as HTMLInputElement).value;
                             } else {
-                                config.wispCustomProxy = e.currentTarget.value;
+                                config.wispCustomProxy = (e.currentTarget as HTMLInputElement).value;
                             }
                         }}
                     />
