@@ -32,9 +32,14 @@
         // Initialize theme, title, favicon
         if (document) {
             document.title = localStorage.getItem("tabTitle") || "Classroom";
-            const faviconElement = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+            const faviconElement = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
             if (faviconElement) {
                 faviconElement.href = localStorage.getItem("faviconUrl") || "/Google_Classroom_Logo.svg.png";
+            } else {
+                const newLink = document.createElement("link");
+                newLink.rel = "icon";
+                newLink.href = localStorage.getItem("faviconUrl") || "/Google_Classroom_Logo.svg.png";
+                document.head.appendChild(newLink);
             }
             window.document.documentElement.style.setProperty("--color-blue-500", localStorage.getItem("theme") || "#2b7fff")
             window.document.documentElement.style.setProperty("--color-slate-950", localStorage.getItem("bgColor") || "#0d1117")
@@ -263,4 +268,3 @@
         <Games bind:view />
     {/if}
 {/if}
-</script>
