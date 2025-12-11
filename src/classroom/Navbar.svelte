@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Menu, Plus, Grip, User } from 'lucide-svelte';
+    import { Menu, Plus, Grip, User } from '@lucide/svelte';
 
     let { onVerdisClick }: { onVerdisClick: () => void } = $props();
 </script>

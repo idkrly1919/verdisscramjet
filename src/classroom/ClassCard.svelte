@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { MoreVertical, Folder, FileBadge } from 'lucide-svelte';
+    import { MoreVertical, Folder, FileBadge } from '@lucide/svelte';
 
     export let title: string;
     export let section: string;

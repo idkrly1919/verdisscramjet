@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Home, Calendar, BookOpen, GraduationCap, Archive, Settings } from 'lucide-svelte';
+    import { Home, Calendar, BookOpen, GraduationCap, Archive, Settings } from '@lucide/svelte';
 </script>
 
 <aside class="w-72 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 overflow-y-auto py-2 fixed top-16 left-0 hidden md:block">
