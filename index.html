@@ -22,28 +22,14 @@
             background-color: var(--color-slate-950);
         }
     </style>
-    <!-- Scramjet scripts will be loaded from the extracted zip -->
-    <script src="scramjet/scramjet.all.js"></script>
-    <script src="scramjet/scramjet.config.js"></script>
 </head>
 
 <body class="black">
     <div id="app"></div>
     <script type="module" lang="ts">
         import App from './src/App.svelte';
-        import proxyManager from "./src/proxy.svelte";
         import './src/app.css';
         import { mount } from "svelte";
-
-        // Attempt to load config from window object if the zip's config.js set it
-        // We assume the zip sets __scramjet$config or similar
-        if (typeof __scramjet$config !== 'undefined') {
-            proxyManager.scramjetConfig = __scramjet$config;
-        } else {
-            console.warn("Scramjet config not found on window. Ensure scramjet.config.js is correct.");
-        }
-        
-        proxyManager.initializeProxy();
 
         const app = mount(App, {
             target: document.getElementById('app')

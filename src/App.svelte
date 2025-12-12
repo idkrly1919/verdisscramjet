@@ -1,9 +1,7 @@
 <script lang="ts">
     import Config from "./Config.svelte";
-    import config from "./config.svelte";
     import proxyManager from "./proxy.svelte";
     import { onEnterKeyPressed } from "./util";
-    import autoProxyProber from "./prober.svelte";
     import { History } from "./history";
     import Games from "./Games.svelte";
     import Classroom from "./classroom/Classroom.svelte";
@@ -20,14 +18,6 @@
     } from "@lucide/svelte";
     import { onMount } from "svelte";
     import { fade, fly } from "svelte/transition";
-
-    $effect(() => {
-        if (config.useBare && config.bareSelectedProxy === "auto") {
-            autoProxyProber.probeBare();
-        } else if (config.wispSelectedProxy === "auto") {
-            autoProxyProber.probeWisp();
-        }
-    });
 
     onMount(() => {
         if (document) {
@@ -53,10 +43,6 @@
         if (view === 'home' && !proxyManager.isProxyOpen && urlBar) {
             urlBar.focus();
         }
-    });
-
-    $effect(() => {
-        proxyManager.setProxyServer(proxyManager.proxyUrl);
     });
 
     let destinationInput = $state("");
@@ -87,25 +73,12 @@
 
     function onIframeLoad() {
         if (iframe == undefined) return;
-        try {
-            const src = iframe.contentWindow.location.pathname;
-            // Check if path starts with scramjet prefix
-            if (proxyManager.scramjetConfig && !src.startsWith(proxyManager.scramjetConfig.prefix)) return;
-
-            iframeHasLoaded = true;
+        iframeHasLoaded = true;
                         
-            if (searchbar) {
-                searchbar.value = proxyManager.url;
-            }
-            destinationInput = proxyManager.url;
-
-            if (proxyManager.controller) {
-                proxyManager.url = proxyManager.controller.decodeUrl(iframe.contentWindow.location.href);
-            }
-        } catch(e) {
-            // Ignore cross-origin errors
-            iframeHasLoaded = true;
+        if (searchbar) {
+            searchbar.value = proxyManager.url;
         }
+        destinationInput = proxyManager.url;
     }
 
     let proxyHistory = new History();
