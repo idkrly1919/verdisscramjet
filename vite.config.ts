@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import tailwindcss from '@tailwindcss/vite';
 import { viteStaticCopy } from "vite-plugin-static-copy";
-import { uvPath } from '@titaniumnetwork-dev/ultraviolet';
+import { scramjetPath } from "@mercuryworkshop/scramjet/path";
 import { bareModulePath } from "@mercuryworkshop/bare-as-module3";
 import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
@@ -16,23 +16,18 @@ export default defineConfig({
         viteStaticCopy({
             targets: [
                 {
-                    src: uvPath + "/uv.bundle.js",
-                    dest: "uv",
+                    src: scramjetPath + "/scramjet.wasm.wasm",
+                    dest: "scramjet",
                     overwrite: true,
                 },
                 {
-                    src: uvPath + "/uv.client.js",
-                    dest: "uv",
+                    src: scramjetPath + "/scramjet.all.js",
+                    dest: "scramjet",
                     overwrite: true,
                 },
                 {
-                    src: uvPath + "/uv.handler.js",
-                    dest: "uv",
-                    overwrite: true,
-                },
-                {
-                    src: uvPath + "/uv.sw.js",
-                    dest: "uv",
+                    src: scramjetPath + "/scramjet.sync.js",
+                    dest: "scramjet",
                     overwrite: true,
                 },
                 {

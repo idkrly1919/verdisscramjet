@@ -16,6 +16,7 @@
         ArrowLeft,
         X,
         Gamepad2,
+        Maximize2,
     } from "@lucide/svelte";
     import { onMount } from "svelte";
     import { fade, fly } from "svelte/transition";
@@ -86,19 +87,25 @@
 
     function onIframeLoad() {
         if (iframe == undefined) return;
-        const src = iframe.contentWindow.location.pathname;
-        if (!src.includes(proxyManager.uvConfig.prefix)) return;
+        try {
+            const src = iframe.contentWindow.location.pathname;
+            // Check if path starts with scramjet prefix
+            if (proxyManager.scramjetConfig && !src.startsWith(proxyManager.scramjetConfig.prefix)) return;
 
-        iframeHasLoaded = true;
-                    
-        if (searchbar) {
-            searchbar.value = proxyManager.url;
+            iframeHasLoaded = true;
+                        
+            if (searchbar) {
+                searchbar.value = proxyManager.url;
+            }
+            destinationInput = proxyManager.url;
+
+            if (proxyManager.controller) {
+                proxyManager.url = proxyManager.controller.decodeUrl(iframe.contentWindow.location.href);
+            }
+        } catch(e) {
+            // Ignore cross-origin errors
+            iframeHasLoaded = true;
         }
-        destinationInput = proxyManager.url;
-
-        proxyManager.url = proxyManager.uvConfig.decodeUrl(
-            src.slice(proxyManager.uvConfig.prefix.length),
-        );
     }
 
     let proxyHistory = new History();

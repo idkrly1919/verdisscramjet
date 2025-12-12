@@ -25,8 +25,8 @@
 </head>
 
 <body class="black">
-    <script src="uv/uv.bundle.js"></script>
-    <script src="uv/uv.config.js"></script>
+    <script src="scramjet/scramjet.all.js"></script>
+    <script src="scramjet/scramjet.config.js"></script>
 
     <div id="app"></div>
     <script type="module" lang="ts">
@@ -35,8 +35,8 @@
         import './src/app.css';
         import { mount } from "svelte";
 
-        // stfu vite
-        proxyManager.uvConfig = __uv$config;
+        // Initialize Scramjet
+        proxyManager.scramjetConfig = __scramjet$config;
         proxyManager.initializeProxy();
 
         const app = mount(App, {

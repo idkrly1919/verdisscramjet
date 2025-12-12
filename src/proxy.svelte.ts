@@ -1,25 +1,16 @@
 import { BareMuxConnection } from "@mercuryworkshop/bare-mux";
-import ProxyComponent from "./Proxy.svelte";
 import config from "./config.svelte";
 import { httpUrlToWebSocket } from "./util";
 import autoProxyProber from "./prober.svelte";
 import { adBlocklist } from "./adBlocklist";
 
+// Declare global Scramjet types if needed, or rely on window globals
+declare global {
+    var $scramjetLoadController: any;
+}
+
 let iframeHasLoaded = $state(true);
 let proxyStarted = $state(false);
-
-interface UvConfig {
-    prefix: string;
-    encodeUrl: (s: string) => string;
-    decodeUrl: (s: string) => string;
-    handler: string;
-    client: string;
-    bundle: string;
-    config: string;
-    sw: string;
-    stockSW: string;
-    loc: string;
-}
 
 export class ServiceWorkerConfig {
     blocklist: Set<string> = new Set();
@@ -31,52 +22,56 @@ export class ServiceWorkerConfig {
 
 export class ProxyManager {
     // set in index.html
-    uvConfig: UvConfig;
+    scramjetConfig: any;
     bareMuxConnection: BareMuxConnection;
-    swBroadcastChannel: BroadcastChannel;
-    serviceWorker: ServiceWorker | null = $state(null);
+    controller: any; // ScramjetController instance
 
     constructor() {
-        this.swBroadcastChannel = new BroadcastChannel("UvServiceWorker");
-        this.swBroadcastChannel.addEventListener("message", (() => {
-            navigator.serviceWorker.getRegistration(this.uvConfig.sw).then(((sw: ServiceWorkerRegistration) => {
-                this.serviceWorker = sw.active;
-                this.updateSWConfig(new ServiceWorkerConfig(config.adblock));
-            }).bind(this));
-        }).bind(this));
+        // Scramjet handles SW registration differently, usually via its controller
     }
 
     async initializeProxy() {
-        this.bareMuxConnection = new BareMuxConnection(this.uvConfig.loc + "/baremux/worker.js");
-        await this.registerSW();
+        // Initialize Scramjet Controller
+        const { ScramjetController } = window.$scramjetLoadController();
+        this.controller = new ScramjetController(this.scramjetConfig);
+        await this.controller.init();
+
+        // Register SW
+        if ('serviceWorker' in navigator) {
+             await navigator.serviceWorker.register("scramjet/sw.js");
+        }
+
+        // Initialize BareMux
+        this.bareMuxConnection = new BareMuxConnection("/baremux/worker.js");
+        
         await this.setProxyServer(this.proxyUrl);
     }
 
     async setProxyServer(proxyUrl: string) {
         if (proxyUrl == "") return;
-        const loc = this.uvConfig.loc;
+        const loc = "/"; // Root path for baremux scripts
 
         if (config.useBare) {
-            this.bareMuxConnection.setTransport(loc + "/baremod/index.mjs", [
+            this.bareMuxConnection.setTransport(loc + "baremod/index.mjs", [
                 proxyUrl
             ]);
         } else {
             // set to websocket protocol
-            this.bareMuxConnection.setTransport(loc + "/libcurl/index.mjs", [
+            this.bareMuxConnection.setTransport(loc + "libcurl/index.mjs", [
                 { wisp: httpUrlToWebSocket(proxyUrl) },
             ]);
         }
     }
 
-    // set when ProxyComponent loads
-    proxyComponent: ProxyComponent | undefined;
-
     isProxyOpen: boolean = $state(false);
     
     url: string = $state("");
     iframeUrl: string = $state("");
+    
     reloadIframe() {
-        this.iframeUrl = this.uvConfig.prefix + this.uvConfig.encodeUrl(this.url);
+        if (this.controller) {
+            this.iframeUrl = this.controller.encodeUrl(this.url);
+        }
     }
 
     proxyUrl = $derived.by(() => {
@@ -111,33 +106,20 @@ export class ProxyManager {
         this.url = destination;
     }
 
-    async registerSW() {
-        if (!navigator.serviceWorker) {
-            if (
-                location.protocol !== "https:" &&
-                !["localhost", "127.0.0.1"].includes(location.hostname)
-            )
-                throw new Error(
-                    "Service workers cannot be registered without https.",
-                );
-
-            throw new Error("Your browser doesn't support service workers.");
-        }
-
-        let sw = await navigator.serviceWorker.register(this.uvConfig.stockSW);
-        if (sw.active) {
-            this.serviceWorker = sw.active;
-            this.updateSWConfig(new ServiceWorkerConfig(config.adblock));
-        }
-    }
-
     async updateSWConfig(cfg: ServiceWorkerConfig) {
-        if (!this.serviceWorker) return;
-        this.serviceWorker.postMessage(cfg);
+        // Scramjet might handle config differently, typically via postMessage to SW
+        // For basic adblocking implementation similar to UV, we'd need to extend the SW
+        // For now, this is a placeholder matching the previous structure
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+             navigator.serviceWorker.controller.postMessage({
+                 type: "updateConfig",
+                 data: cfg
+             });
+        }
     }
 
     startProxy(destinationInput: string): boolean {
-        if (proxyManager.proxyUrl === "" || !proxyManager.serviceWorker)
+        if (proxyManager.proxyUrl === "")
             return false;
     
         proxyManager.setDestination(destinationInput);
