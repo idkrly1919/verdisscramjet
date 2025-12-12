@@ -11,7 +11,7 @@ The application is built with the following technologies:
 *   **Build Tool:** Vite.
 *   **Styling:** Tailwind CSS for utility-first styling, with DaisyUI for pre-built UI components.
 *   **Icons:** Lucide Svelte (`@lucide/svelte`) for all vector icons.
-*   **Proxy Engine:** Utilizes the Ultraviolet proxy engine along with Bare Mux for handling web traffic.
+*   **Proxy Engine:** Utilizes the Scramjet proxy engine along with Bare Mux for handling web traffic.
 *   **State Management:** Svelte 5 Runes (`$state`, `$derived`, `$effect`) are used for all state management.
 
 ## Development Guidelines

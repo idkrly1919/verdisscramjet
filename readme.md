@@ -34,7 +34,7 @@
 
 ## about
 ### features
-- ultraviolet
+- scramjet
 - super fast speeds
 - tab title cloaking
 - icon cloaking
@@ -78,10 +78,9 @@ a lot of things can be customised on this website, including the following
 ### roadmap
 1. add tabbing
 2. add bookmarks
-3. add scramjet support
-4. add auto cloaking
-5. add support via netlify (on-site form)
-6. get a domain (e.g. verdis.net)
+3. add auto cloaking
+4. add support via netlify (on-site form)
+5. get a domain (e.g. verdis.net)
 
 more will be added soon.
 
@@ -238,9 +237,7 @@ pnpm dev
 ## credits
 made with <3 by x8r
 
-thanks to corn unblocked and zeroxoneafour for making ultraviolet completely static
-
-thank you to titanium network and mercury workshop for ultraviolet, scramjet (support soon!), libcurl, epoxy, wisp, and more.
+thank you to titanium network and mercury workshop for scramjet, libcurl, epoxy, wisp, and more.
 
 and thank you to all the contributors.
 
