@@ -48,12 +48,14 @@
         try {
             const src = iframe.contentWindow.location.pathname;
             
-            // For UV proxy, check if the path includes prefix
-            if (src.includes(proxyManager.uvConfig.prefix)) {
+            // For Scramjet proxy, check if the path includes prefix
+            if (proxyManager.scramjetConfig && src.startsWith(proxyManager.scramjetConfig.prefix)) {
                 iframeHasLoaded = true;
-                proxyManager.url = proxyManager.uvConfig.decodeUrl(
-                    src.slice(proxyManager.uvConfig.prefix.length),
-                );
+                if (proxyManager.controller) {
+                    proxyManager.url = proxyManager.controller.decodeUrl(
+                        src.slice(proxyManager.scramjetConfig.prefix.length),
+                    );
+                }
             } else {
                 // If it's a direct load (same-origin but not proxy path), consider it loaded
                 iframeHasLoaded = true;
