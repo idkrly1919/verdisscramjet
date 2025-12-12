@@ -1,8 +1,7 @@
 <script lang="ts">
     import config, { saveConfig } from "./config.svelte";
-    import { bareProxyUrls, wispProxyUrls, themes } from "./verdis";
-    import proxyManager, { ServiceWorkerConfig } from "./proxy.svelte";
-    import { Eye, Zap, Palette, Globe, Megaphone, User, Info, Newspaper, HelpCircle, X, ChevronRight, Monitor } from "@lucide/svelte";
+    import { themes } from "./verdis";
+    import { Eye, Palette, User, Info, Newspaper, HelpCircle, X } from "@lucide/svelte";
 
     let { isConfigOpen = $bindable() }: { isConfigOpen: boolean } = $props();
     let modalElement: HTMLDialogElement = $state();
@@ -10,10 +9,7 @@
 
     const tabs = [
         { id: "Cloaking", icon: Eye, label: "Cloaking" },
-        { id: "Performance", icon: Zap, label: "Performance" },
         { id: "Themes", icon: Palette, label: "Themes" },
-        { id: "Proxy", icon: Globe, label: "Proxy & Browser" },
-        { id: "Advertising", icon: Megaphone, label: "Advertising" },
         { id: "Account", icon: User, label: "Account" },
         { id: "About", icon: Info, label: "About & Statistics" },
         { id: "News", icon: Newspaper, label: "News & Updates" },
@@ -32,15 +28,11 @@
         }
     });
 
-    $effect(() => {
-        proxyManager.updateSWConfig(new ServiceWorkerConfig(config.adblock));
-    });
-
     const faviconElement = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
 
     function openAboutBlank() {
         var win = window.open();
-        const url = window.location.href || "https://etherealproxy.netlify.app";
+        const url = window.location.href;
         win.document.body.style.margin = "0";
         win.document.body.style.height = "100vh";
         var iframe = win.document.createElement('iframe');
@@ -82,17 +74,6 @@
                             <span class="font-medium text-sm">{tab.label}</span>
                         </button>
                     {/each}
-                    
-                    <div class="px-4 py-3 mt-4">
-                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs text-zinc-500">
-                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span>
-                            Coming Soon
-                        </span>
-                        <div class="flex items-center gap-4 px-4 py-3.5 text-zinc-600 cursor-not-allowed">
-                            <Monitor size={20} />
-                            <span class="font-medium text-sm">Plugins</span>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -115,7 +96,7 @@
                             <div class="bg-zinc-900/30 border border-white/5 rounded-2xl p-6">
                                 <h4 class="text-lg font-semibold text-white mb-2">About:Blank & Blob Cloaking</h4>
                                 <p class="text-sm text-zinc-400 leading-relaxed mb-6 max-w-2xl">
-                                    About:Blank allows you to hide your tab history, and blockers such as GoGuardian by appearing that you are on a blank tab. If About:Blank doesn't work, then you can try using the blob cloaking which uses temporary data.
+                                    About:Blank allows you to hide your tab history by appearing that you are on a blank tab.
                                 </p>
                                 <div class="flex gap-4">
                                     <button 
@@ -124,29 +105,6 @@
                                     >
                                         Launch About:Blank
                                     </button>
-                                    <button class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-4 rounded-xl transition-colors border border-white/5">
-                                        Launch Blob
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Auto Cloaking -->
-                            <div class="bg-zinc-900/30 border border-white/5 rounded-2xl p-6">
-                                <h4 class="text-lg font-semibold text-white mb-2">Automatic cloaking</h4>
-                                <p class="text-sm text-zinc-400 leading-relaxed mb-2">
-                                    This toggles automatic cloaking when the site first loads which hides the site from entering your history.
-                                </p>
-                                <p class="text-xs text-zinc-500 mb-6">Note: Only one automatic cloaking toggle is allowed at a time.</p>
-                                
-                                <div class="space-y-4 divide-y divide-white/5">
-                                    <div class="flex items-center justify-between pt-2">
-                                        <span class="text-sm text-zinc-300">Auto-Launch About:Blank</span>
-                                        <input type="checkbox" class="toggle toggle-secondary" />
-                                    </div>
-                                    <div class="flex items-center justify-between pt-4">
-                                        <span class="text-sm text-zinc-300">Auto-Launch Blob</span>
-                                        <input type="checkbox" class="toggle toggle-secondary" />
-                                    </div>
                                 </div>
                             </div>
 
@@ -183,63 +141,6 @@
                                 </div>
                             </div>
                         </div>
-                    {:else if activeTab === "Proxy"}
-                        <div class="space-y-6">
-                            <div class="bg-zinc-900/30 border border-white/5 rounded-2xl p-6">
-                                <h4 class="text-lg font-semibold text-white mb-4">Connection Protocol</h4>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <button 
-                                        class="flex items-center justify-between p-4 rounded-xl border transition-all {config.useBare ? 'bg-[#8b5cf6]/10 border-[#8b5cf6] text-white' : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:bg-zinc-900'}"
-                                        onclick={() => config.useBare = true}
-                                    >
-                                        <span class="font-medium">Bare</span>
-                                        {#if config.useBare}<div class="w-2 h-2 rounded-full bg-[#8b5cf6] shadow-[0_0_10px_#8b5cf6]"></div>{/if}
-                                    </button>
-                                    <button 
-                                        class="flex items-center justify-between p-4 rounded-xl border transition-all {!config.useBare ? 'bg-[#8b5cf6]/10 border-[#8b5cf6] text-white' : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:bg-zinc-900'}"
-                                        onclick={() => config.useBare = false}
-                                    >
-                                        <span class="font-medium">Wisp</span>
-                                        {#if !config.useBare}<div class="w-2 h-2 rounded-full bg-[#8b5cf6] shadow-[0_0_10px_#8b5cf6]"></div>{/if}
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="bg-zinc-900/30 border border-white/5 rounded-2xl p-6">
-                                <h4 class="text-lg font-semibold text-white mb-4">Proxy Server</h4>
-                                <div class="space-y-4">
-                                    <div class="relative">
-                                        <select 
-                                            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-[#8b5cf6]"
-                                            value={config.useBare ? config.bareSelectedProxy : config.wispSelectedProxy}
-                                            onchange={(e) => {
-                                                const val = (e.target as HTMLSelectElement).value;
-                                                if (config.useBare) config.bareSelectedProxy = val;
-                                                else config.wispSelectedProxy = val;
-                                            }}
-                                        >
-                                            {#each Object.entries(config.useBare ? bareProxyUrls : wispProxyUrls) as [url, name]}
-                                                <option value={url}>{name}</option>
-                                            {/each}
-                                        </select>
-                                        <ChevronRight class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 rotate-90" size={16} />
-                                    </div>
-                                    
-                                    {#if (config.useBare ? config.bareSelectedProxy : config.wispSelectedProxy) === "custom"}
-                                        <input
-                                            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-colors"
-                                            placeholder="Enter custom URL..."
-                                            value={config.useBare ? config.bareCustomProxy : config.wispCustomProxy}
-                                            oninput={(e) => {
-                                                const val = (e.target as HTMLInputElement).value;
-                                                if (config.useBare) config.bareCustomProxy = val;
-                                                else config.wispCustomProxy = val;
-                                            }}
-                                        />
-                                    {/if}
-                                </div>
-                            </div>
-                        </div>
                     {:else if activeTab === "Themes"}
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                             {#each Object.entries(themes) as [name, [hex, bg]]}
@@ -259,15 +160,6 @@
                                     <span class="font-medium text-white capitalize">{name}</span>
                                 </button>
                             {/each}
-                        </div>
-                    {:else if activeTab === "Advertising"}
-                         <div class="bg-zinc-900/30 border border-white/5 rounded-2xl p-6">
-                            <h4 class="text-lg font-semibold text-white mb-2">Adblocker</h4>
-                            <p class="text-sm text-zinc-400 mb-6">Block intrusive ads and trackers while browsing.</p>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-zinc-300">Enable Adblock</span>
-                                <input type="checkbox" class="toggle toggle-primary" bind:checked={config.adblock} />
-                            </div>
                         </div>
                     {:else}
                         <div class="flex flex-col items-center justify-center h-64 text-zinc-500">

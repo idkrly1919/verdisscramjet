@@ -1,41 +1,21 @@
 class SaveableConfig {
     configVersion: number;
-    useBare: boolean;
-    wispSelectedProxy: string;
-    wispCustomProxy: string;
-    bareSelectedProxy: string;
-    bareCustomProxy: string;
-    probeTimeout: number;
-    adblock: boolean;
+    tabTitle: string;
+    theme: string;
 }
 
 export class Config {
     // config version (incrementing forces a config rewrite)
-    public configVersion: number = $state(2);
-    // whether to use bare or wisp
-    public useBare: boolean = $state(false);
-    // these 4 are pretty self explanatory
-    public wispSelectedProxy: string = $state("auto");
-    public wispCustomProxy: string = $state("");
-    public bareSelectedProxy: string = $state("auto");
-    public bareCustomProxy: string = $state("");
-    public tabTitle: string = $state("")
-    public theme: string = $state("")
-    // auto detect proxy timeout (ms)
-    public probeTimeout: number = $state(5000);
-    public adblock: boolean = $state(true);
+    public configVersion: number = $state(3);
+    public tabTitle: string = $state("");
+    public theme: string = $state("");
 }
 
 export function saveConfig(cfg: Config): void {
     localStorage.setItem("config", JSON.stringify({
         configVersion: cfg.configVersion,
-        useBare: cfg.useBare,
-        wispSelectedProxy: cfg.wispSelectedProxy,
-        wispCustomProxy: cfg.wispCustomProxy,
-        bareSelectedProxy: cfg.bareSelectedProxy,
-        bareCustomProxy: cfg.bareCustomProxy,
-        probeTimeout: cfg.probeTimeout,
-        adblock: cfg.adblock,
+        tabTitle: cfg.tabTitle,
+        theme: cfg.theme,
     }));
 }
 
@@ -45,16 +25,19 @@ function loadConfig(): Config {
     if (str == null) {
         return ret;
     }
-    let tmp = JSON.parse(str) as SaveableConfig;
-    // overwrite old configs
-    if (
-        tmp.configVersion == undefined ||
-        tmp.configVersion < ret.configVersion
-    ) {
-        return ret;
-    }
-    for (const prop in tmp) {
-        ret[prop] = tmp[prop];
+    try {
+        let tmp = JSON.parse(str) as SaveableConfig;
+        // overwrite old configs if version changed significantly
+        if (
+            tmp.configVersion == undefined ||
+            tmp.configVersion < ret.configVersion
+        ) {
+            return ret;
+        }
+        if (tmp.tabTitle !== undefined) ret.tabTitle = tmp.tabTitle;
+        if (tmp.theme !== undefined) ret.theme = tmp.theme;
+    } catch (e) {
+        console.error("Failed to load config", e);
     }
     return ret;
 }
